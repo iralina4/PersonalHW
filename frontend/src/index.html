@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЕГЭ Репетитор - Полный интерфейс</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Навигация -->
+        <nav class="bg-white border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <h1 class="text-xl font-bold text-gray-900">ЕГЭ Репетитор</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button onclick="showPage('home')" class="nav-btn active" id="homeBtn">Главная</button>
+                        <button onclick="showPage('student')" class="nav-btn" id="studentBtn">Профиль ученика</button>
+                        <button onclick="showPage('generate')" class="nav-btn" id="generateBtn">Создать ДЗ</button>
+                        <button onclick="showPage('addTask')" class="nav-btn" id="addTaskBtn">Добавить задачи</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <!-- Главная страница -->
+            <div id="homePage" class="page">
+                <div class="text-center">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-8">
+                        Система персонализированных заданий по математике
+                    </h1>
+                    
+                    <div class="grid md:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <div class="text-3xl mb-4">👤</div>
+                            <h3 class="text-xl font-semibold mb-2">Профиль ученика</h3>
+                            <p class="text-gray-600 mb-4">Создание и настройка профиля</p>
+                            <button onclick="showPage('student')" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                                Перейти
+                            </button>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <div class="text-3xl mb-4">🎯</div>
+                            <h3 class="text-xl font-semibold mb-2">Создать ДЗ</h3>
+                            <p class="text-gray-600 mb-4">Генерация заданий по темам</p>
+                            <button onclick="showPage('generate')" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                                Перейти
+                            </button>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <div class="text-3xl mb-4">📚</div>
+                            <h3 class="text-xl font-semibold mb-2">Добавить задачи</h3>
+                            <p class="text-gray-600 mb-4">Пополнение базы задач</p>
+                            <button onclick="showPage('addTask')" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
+                                Перейти
+                            </button>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <div class="text-3xl mb-4">📊</div>
+                            <h3 class="text-xl font-semibold mb-2">Статистика</h3>
+                            <div id="statsContent" class="text-gray-500">Загрузка...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Страница создания ДЗ -->
+            <div id="generatePage" class="page hidden">
+                <h1 class="text-3xl font-bold text-gray-900 mb-8">Создание домашнего задания</h1>
+                
+                <div class="bg-white shadow rounded-lg p-6">
+                    <form id="generateForm" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Выберите ученика</label>
+                            <select id="selectedStudent" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                                <option value="">Загрузка учеников...</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Темы и количество задач *</label>
+                            <textarea id="topicsText" required rows="4" 
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                      placeholder="Введите темы в формате: Алгебра — 3, Геометрия — 2"></textarea>
+                            
+                            <div class="mt-4 grid md:grid-cols-2 gap-2">
+                                <button type="button" onclick="setTopics('Алгебра — 3, Геометрия — 2')" 
+                                        class="text-left px-3 py-2 text-sm bg-gray-50 hover:bg-gray-100 rounded border">
+                                    Алгебра — 3, Геометрия — 2
+                                </button>
+                                <button type="button" onclick="setTopics('Логарифмы — 2, Тригонометрия — 2')" 
+                                        class="text-left px-3 py-2 text-sm bg-gray-50 hover:bg-gray-100 rounded border">
+                                    Логарифмы — 2, Тригонометрия — 2
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="includePart2" class="mr-2">
+                                <label for="includePart2" class="text-sm text-gray-900">Включить задачи части 2</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="makeTwoPdfs" checked class="mr-2">
+                                <label for="makeTwoPdfs" class="text-sm text-gray-900">Создать два PDF</label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">
+                            Сгенерировать домашнее задание
+                        </button>
+                    </form>
+
+                    <div id="generateResult" class="mt-6 hidden"></div>
+                </div>
+            </div>
+
+            <!-- Страница добавления задач -->
+            <div id="addTaskPage" class="page hidden">
+                <h1 class="text-3xl font-bold text-gray-900 mb-8">Добавление задач в базу</h1>
+                
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <h2 class="text-xl font-semibold mb-4">➕ Добавить задачу</h2>
+                        
+                        <form id="singleTaskForm" class="space-y-4">
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Тема *</label>
+                                    <select id="taskTopic" required class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                                        <option value="">Выберите тему</option>
+                                        <option value="Алгебра">Алгебра</option>
+                                        <option value="Геометрия">Геометрия</option>
+                                        <option value="Тригонометрия">Тригонометрия</option>
+                                        <option value="Логарифмы">Логарифмы</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Сложность *</label>
+                                    <select id="taskDifficulty" required class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                                        <option value="">Выберите</option>
+                                        <option value="1">1 - Легкая</option>
+                                        <option value="2">2 - Легкая</option>
+                                        <option value="3">3 - Средняя</option>
+                                        <option value="4">4 - Сложная</option>
+                                        <option value="5">5 - Очень сложная</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Условие задачи *</label>
+                                <textarea id="statementText" required rows="4" 
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                          placeholder="Введите условие задачи..."></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Ответ</label>
+                                <input type="text" id="taskAnswer" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                       placeholder="Введите ответ...">
+                            </div>
+
+                            <button type="submit" class="w-full bg-purple-500 text-white px-6 py-2 rounded hover:bg-purple-600">
+                                Добавить задачу
+                            </button>
+                        </form>
+
+                        <div id="taskResult" class="mt-6 hidden"></div>
+                    </div>
+
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <h2 class="text-xl font-semibold mb-4">📦 Массовый импорт</h2>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Данные JSONL</label>
+                                <textarea id="importData" rows="8" 
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md font-mono text-sm"
+                                          placeholder='{"topic": "Алгебра", "difficulty": 3, "statement_text": "...", "answer": "..."}'></textarea>
+                            </div>
+
+                            <button onclick="importTasks()" class="w-full bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">
+                                Импортировать задачи
+                            </button>
+                        </div>
+
+                        <div id="importResult" class="mt-6 hidden"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Страница профиля -->
+            <div id="studentPage" class="page hidden">
+                <h1 class="text-3xl font-bold text-gray-900 mb-8">Создание профиля ученика</h1>
+                
+                <div class="bg-white shadow rounded-lg p-6">
+                    <form id="studentForm" class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Имя ученика *</label>
+                                <input type="text" id="studentName" required 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                       placeholder="Введите имя ученика">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input type="email" id="studentEmail" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                       placeholder="student@example.com">
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Класс</label>
+                                <select id="grade" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                                    <option value="10">10 класс</option>
+                                    <option value="11" selected>11 класс</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Целевой балл</label>
+                                <input type="number" id="targetScore" min="0" max="100" value="80"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Темп</label>
+                                <select id="pace" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                                    <option value="slow">Медленный</option>
+                                    <option value="medium" selected>Средний</option>
+                                    <option value="fast">Быстрый</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Слабые темы</label>
+                            <textarea id="weakTopics" rows="3" 
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                      placeholder="Логарифмы, Тригонометрия, Параметры"></textarea>
+                        </div>
+
+                        <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
+                            Создать профиль ученика
+                        </button>
+                    </form>
+
+                    <div id="studentResult" class="mt-6 hidden"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <style>
+        .nav-btn {
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover {
+            color: #374151;
+            background-color: #f3f4f6;
+        }
+        .nav-btn.active {
+            color: #2563eb;
+            background-color: #dbeafe;
+        }
+        .page {
+            padding: 24px 16px;
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(pageName + 'Page').classList.remove('hidden');
+            document.getElementById(pageName + 'Btn').classList.add('active');
+            
+            if (pageName === 'generate') loadStudents();
+        }
+
+        async function loadStudents() {
+            try {
+                const response = await fetch(`${API_BASE}/api/students/`);
+                const students = await response.json();
+                
+                const select = document.getElementById('selectedStudent');
+                select.innerHTML = '<option value="">Выберите ученика</option>';
+                
+                students.forEach(student => {
+                    const option = document.createElement('option');
+                    option.value = student.id;
+                    option.textContent = `${student.name} (ID: ${student.id})`;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Ошибка загрузки учеников:', error);
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const [tasksResponse, studentsResponse] = await Promise.all([
+                    fetch(`${API_BASE}/api/tasks/?limit=100`),
+                    fetch(`${API_BASE}/api/students/`)
+                ]);
+                
+                const tasks = await tasksResponse.json();
+                const students = await studentsResponse.json();
+                
+                document.getElementById('statsContent').innerHTML = `
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div>
+                            <div class="text-2xl font-bold text-blue-600">${tasks.length}</div>
+                            <div class="text-sm text-gray-600">Задач в базе</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-green-600">${students.length}</div>
+                            <div class="text-sm text-gray-600">Учеников</div>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('statsContent').innerHTML = 
+                    '<p class="text-red-600 text-sm">Ошибка загрузки</p>';
+            }
+        }
+
+        // Создание ученика
+        document.getElementById('studentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const studentData = {
+                name: document.getElementById('studentName').value,
+                email: document.getElementById('studentEmail').value || 'student@example.com'
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/students/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(studentData)
+                });
+                
+                const student = await response.json();
+                
+                const profileData = {
+                    grade: parseInt(document.getElementById('grade').value),
+                    target_score: parseInt(document.getElementById('targetScore').value),
+                    pace: document.getElementById('pace').value,
+                    weak_topics: document.getElementById('weakTopics').value.split(',').map(s => s.trim()).filter(s => s)
+                };
+                
+                await fetch(`${API_BASE}/api/students/${student.id}/profile`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(profileData)
+                });
+                
+                document.getElementById('studentResult').classList.remove('hidden');
+                document.getElementById('studentResult').innerHTML = `
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h3 class="font-semibold text-green-800">✅ Ученик создан</h3>
+                        <p>Имя: ${student.name}</p>
+                        <p>ID: ${student.id}</p>
+                    </div>
+                `;
+                
+            } catch (error) {
+                document.getElementById('studentResult').classList.remove('hidden');
+                document.getElementById('studentResult').innerHTML = 
+                    `<div class="bg-red-50 p-4 rounded-lg">
+                        <p class="text-red-800">Ошибка: ${error.message}</p>
+                    </div>`;
+            }
+        });
+
+        // Генерация задания
+        document.getElementById('generateForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const studentId = document.getElementById('selectedStudent').value;
+            if (!studentId) {
+                alert('Выберите ученика');
+                return;
+            }
+
+            const assignmentData = {
+                student_id: parseInt(studentId),
+                topics_text: document.getElementById('topicsText').value,
+                options: {
+                    include_part2: document.getElementById('includePart2').checked,
+                    make_two_pdfs: document.getElementById('makeTwoPdfs').checked
+                }
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/assignments/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(assignmentData)
+                });
+                
+                const result = await response.json();
+                
+                const assignmentResponse = await fetch(`${API_BASE}/api/assignments/${result.assignment_id}`);
+                const assignment = await assignmentResponse.json();
+                
+                document.getElementById('generateResult').classList.remove('hidden');
+                document.getElementById('generateResult').innerHTML = `
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h3 class="font-semibold text-green-800">✅ Задание создано</h3>
+                        <p>ID: ${result.assignment_id}</p>
+                        <p>Задач: ${assignment.items.length}</p>
+                        <div class="mt-4 space-y-2">
+                            <a href="${API_BASE}${result.download_urls.student}" target="_blank" 
+                               class="block bg-blue-500 text-white px-4 py-2 rounded text-center hover:bg-blue-600">
+                                📥 PDF для ученика
+                            </a>
+                            <a href="${API_BASE}${result.download_urls.teacher}" target="_blank"
+                               class="block bg-green-500 text-white px-4 py-2 rounded text-center hover:bg-green-600">
+                                📥 PDF для учителя
+                            </a>
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                document.getElementById('generateResult').classList.remove('hidden');
+                document.getElementById('generateResult').innerHTML = 
+                    `<div class="bg-red-50 p-4 rounded-lg">
+                        <p class="text-red-800">Ошибка: ${error.message}</p>
+                    </div>`;
+            }
+        });
+
+        // Добавление задачи
+        document.getElementById('singleTaskForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const taskData = {
+                topic: document.getElementById('taskTopic').value,
+                difficulty: parseInt(document.getElementById('taskDifficulty').value),
+                statement_text: document.getElementById('statementText').value,
+                answer: document.getElementById('taskAnswer').value || null,
+                skills: [],
+                tags: []
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/tasks/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(taskData)
+                });
+                
+                const result = await response.json();
+                
+                document.getElementById('taskResult').classList.remove('hidden');
+                document.getElementById('taskResult').innerHTML = `
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-green-800">✅ Задача добавлена</h4>
+                        <p>ID: ${result.id}</p>
+                        <p>Тема: ${result.topic}</p>
+                    </div>
+                `;
+                
+                document.getElementById('singleTaskForm').reset();
+                
+            } catch (error) {
+                document.getElementById('taskResult').classList.remove('hidden');
+                document.getElementById('taskResult').innerHTML = 
+                    `<div class="bg-red-50 p-4 rounded-lg">
+                        <p class="text-red-800">Ошибка: ${error.message}</p>
+                    </div>`;
+            }
+        });
+
+        async function importTasks() {
+            const importData = document.getElementById('importData').value.trim();
+            if (!importData) {
+                alert('Введите данные для импорта');
+                return;
+            }
+
+            try {
+                const lines = importData.split('\n').filter(line => line.trim());
+                const tasks = lines.map(line => JSON.parse(line));
+                
+                const response = await fetch(`${API_BASE}/api/tasks/import`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tasks })
+                });
+                
+                const result = await response.json();
+                
+                document.getElementById('importResult').classList.remove('hidden');
+                document.getElementById('importResult').innerHTML = `
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-green-800">✅ Импорт завершен</h4>
+                        <p>Задач: ${result.total_tasks}</p>
+                    </div>
+                `;
+                
+                document.getElementById('importData').value = '';
+                
+            } catch (error) {
+                document.getElementById('importResult').classList.remove('hidden');
+                document.getElementById('importResult').innerHTML = 
+                    `<div class="bg-red-50 p-4 rounded-lg">
+                        <p class="text-red-800">Ошибка: ${error.message}</p>
+                    </div>`;
+            }
+        }
+
+        function setTopics(text) {
+            document.getElementById('topicsText').value = text;
+        }
+
+        window.addEventListener('load', loadStats);
+    </script>
+</body>
+</html>

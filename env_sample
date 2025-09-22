@@ -1,0 +1,15 @@
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/ege_tutor
+REDIS_URL=redis://localhost:6379/0
+QDRANT_URL=http://localhost:6333
+MEILI_URL=http://localhost:7700
+MEILI_MASTER_KEY=A0TtmeQyFUGBM3We9fbThjuaT3Zq8U72FQh6AO3F2-s
+
+YAGPT_API_URL=https://llm.api.cloud.yandex.net/foundationModels/v1/completion
+YAGPT_API_KEY=your_yandex_gpt_api_key_here
+YAGPT_MODEL=yandexgpt-lite
+
+ADMIN_PASSWORD=admin123
+PDF_SERVICE_URL=http://pdf:8001
+
+
+
